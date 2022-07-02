@@ -8,19 +8,39 @@
       <script type="text/javascript">
          $(document).ready(function() {
          
+           $('#start').attr('disabled', 'disabled');
            // sending a connect request to the server.
            var socket = io.connect('http://qing.ihuhao.com:8000');
          
            socket.on('after connect', function(msg) {
-               console.log('After connect', msg);
-               $('#log').append('<br>' + $('<div/>').text('Received: ' + msg.data).html());
-          });        
+               $('#start').removeAttr("disabled");
+               $('#log').append('<br>' + $('<div/>').text(msg.data).html());
+           });        
+
+           socket.on('strategy-log', function(msg) {
+               $('#log').prepend('<br>' + $('<div/>').text(msg).html());
+           });        
+
+           socket.on('plot', function(baseUrl) {
+               $('#start').removeAttr("disabled");
+               $('#plot').attr('src', "data:image/png;base64,"+baseUrl);
+           });        
+
+           $('#start').on('click', function() {
+               $('#log').empty();
+               $('#plot').attr('src', '');
+               $('#start').attr('disabled', 'disabled');
+               socket.emit('start', {});
+           });
+
+
          });
       </script>
    </head>
    <body>
-    <h1>SocketIO Example</h1>
-    <h2>Receive:</h2>
+    <h1>Online Backtrader Demo</h1>
+    <button id="start">Start</button><br>
+    <img id="plot"><br>
     <div id="log"></div>
    </body>
 </html>
