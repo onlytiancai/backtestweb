@@ -6,3 +6,6 @@ init
     pip install flask
     pip install flask_socketio
     pip install backtrader[plotting]
+    pip uninstall matplotlib
+    pip install matplotlib==3.2.2
+
